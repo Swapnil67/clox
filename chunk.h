@@ -5,11 +5,13 @@
 #define clox_chunk_h
 
 #include "common.h"
+#include "value.h"
 
 // * Opcode
 typedef enum
 {
-  OP_RETURN,
+  OP_CONSTANT,
+  OP_RETURN
 } OpCode;
 
 // * Dynamic Array
@@ -18,16 +20,21 @@ typedef struct
   int count;
   int capacity;
   uint8_t *code;
+  int* lines;
+  ValueArray constants;
 } Chunk;
 
 // * Initialize chunk [dynamic array]
-void initChunk(Chunk* chunk);
+void initChunk(Chunk *chunk);
 
 // * Free the chunk memeory
-void freeChunk(Chunk* chunk);
+void freeChunk(Chunk *chunk);
 
 // * Append at the end of chunk [dynamic array]
-void writeChunk(Chunk* chunk, u_int8_t byte);
+void writeChunk(Chunk *chunk, uint8_t byte, int line);
+
+// * Add constant to value array
+int addConstant(Chunk *chunk, Value value);
 
 #endif
 

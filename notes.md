@@ -8,3 +8,8 @@
 
 ## Disassembler
 - Given a blob of machine code, disassembler spits out a textual listing of the instructions.
+
+## Constant pool
+- The constant pool is an array of values.
+- They are known at compile time.
+ 
