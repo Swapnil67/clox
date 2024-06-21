@@ -27,7 +27,7 @@ void initChunk(Chunk* chunk);
 void freeChunk(Chunk* chunk);
 
 // * Append at the end of chunk [dynamic array]
-void writeChunk(Chunk* chunk, u_int8_t byte)
+void writeChunk(Chunk* chunk, u_int8_t byte);
 
 #endif
 
