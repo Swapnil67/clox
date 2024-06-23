@@ -1,13 +1,30 @@
 #include<stdio.h>
 
 #include "common.h"
+#include "debug.h"
 #include "vm.h"
 
 VM vm;
 
-void initVM() {}
+static void resetStack() {
+  vm.stackTop = vm.stack;
+}
+
+void initVM() {
+  resetStack();
+}
 
 void freeVM() {}
+
+void push(Value value) {
+  *vm.stackTop = value;
+  vm.stackTop++;
+}
+
+Value pop() {
+  vm.stackTop--;
+  return *vm.stackTop;
+}
 
 // * It is the beating heart of the VM.
 static InterpretResult run() {
@@ -21,15 +38,27 @@ static InterpretResult run() {
 
   // * Infinite loop
   for(;;) {
+    #ifdef DEBUG_TRACE_EXECUTION
+      printf("          ");
+      for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
+        printf("[ ");
+        printValue(*slot);
+        printf(" ]");
+      }
+      printf("\n");
+      disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
+    #endif
+
     uint8_t instruction;
     switch(instruction = READ_BYTE()) {
       case OP_CONSTANT: {
         Value constant = READ_CONSTANT();
-        printValue(constant);
-        printf("\n");
+        push(constant);
         break;
       }
       case OP_RETURN: {
+        printValue(pop());
+        printf('\n');
         return INTERPRET_OK;
       }
     }
