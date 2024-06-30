@@ -17,7 +17,9 @@ void initVM() {
 void freeVM() {}
 
 void push(Value value) {
+  // * Stores the value in the array element at the top of stack
   *vm.stackTop = value;
+  // * then the pointer points to next unused spot
   vm.stackTop++;
 }
 
@@ -35,6 +37,12 @@ static InterpretResult run() {
    * * index, and looks up the corresponding Value in the chunk’s constant table. 
    */
   #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+  #define BINARY_OP(op) \
+    do { \
+      double b = pop(); \
+      double a = pop(); \
+      push(a op b); \
+    } while(false)
 
   // * Infinite loop
   for(;;) {
@@ -56,9 +64,14 @@ static InterpretResult run() {
         push(constant);
         break;
       }
+      case OP_ADD:      BINARY_OP(+); break;
+      case OP_SUBTRACT: BINARY_OP(-); break;
+      case OP_MULTIPLY: BINARY_OP(*); break;
+      case OP_DIVIDE:   BINARY_OP(/); break;
+      case OP_NEGATE: push(-pop()); break;
       case OP_RETURN: {
         printValue(pop());
-        printf('\n');
+        printf("\n");
         return INTERPRET_OK;
       }
     }
@@ -67,6 +80,7 @@ static InterpretResult run() {
   // * Undefining macros
   #undef READ_BYTE
   #undef READ_CONSTANT
+  #undef BINARY_OP
 }
 
 InterpretResult interpret(Chunk* chunk) {

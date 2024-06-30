@@ -15,6 +15,19 @@ int main(int argc, const char* argv[]) {
   writeChunk(&chunk, OP_CONSTANT, 10);
   writeChunk(&chunk, constant, 10);
 
+  constant = addConstant(&chunk, 3.4);
+  writeChunk(&chunk, OP_CONSTANT, 123);
+  writeChunk(&chunk, constant, 123);
+
+  writeChunk(&chunk, OP_ADD, 123);
+
+  constant = addConstant(&chunk, 5.6);
+  writeChunk(&chunk, OP_CONSTANT, 123);
+  writeChunk(&chunk, constant, 123);
+
+  writeChunk(&chunk, OP_DIVIDE, 123);
+  writeChunk(&chunk, OP_NEGATE, 10);
+
   writeChunk(&chunk, OP_RETURN, 10);
   disassembleChunk(&chunk, "test chunk");
   interpret(&chunk);
@@ -25,4 +38,4 @@ int main(int argc, const char* argv[]) {
 }
 
 // * Run the code
-// * gcc main.c memory.c value.c chunk.c debug.c -o main && ./main
+// * gcc main.c memory.c value.c chunk.c vm.c debug.c -o main && ./main
